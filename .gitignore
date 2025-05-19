@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+.env
+.vscode/
+uploads/
+*.pdf
+.ipynb_checkpoints/
+*.DS_Store
+*.egg-info/
+*.log
+
+# Ignore all contents in data/
+data/**
+
+# Ignore merged_job_data.csv
+dataset_preprocessing/merged_job_data.csv
+
+# But keep the folders themselves (not the contents)
+!data/
+!data/jobs/
+!data/resumes/
+
+# Allow .gitkeep files inside them
+!data/jobs/.gitkeep
+!data/resumes/.gitkeep
