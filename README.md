@@ -66,21 +66,20 @@ This will:
 ## 🧪 Features Implemented
 
 - ✅ Resume text extraction from PDFs using PyMuPDF
-- ✅ Skill extraction and text cleaning with SpaCy + NLTK
+- ✅ Skill extraction using Hugging Face transformer-based NER models
 - ✅ Job-resume similarity matching using:
   - TF-IDF + cosine similarity
-  - Sentence-BERT (MiniLM)
+  - BM25 scoring (via rank_bm25)
+  - Entity-based Jaccard similarity using Hugging Face NER
+- ✅ Score normalization for fair comparison across all methods
 
 ---
 
 ## 🛠️ To Do Next
 
-- [ ] Finish job dataset preprocessing
-- [ ] Implement BM25-based matching using rank_bm25 or ElasticSearch
-- [ ] Explore skill extraction using Hugging Face NER models
 - [ ] Add Flask-based UI for resume uploads and job matches
-- [ ] Integrate result ranking display
-- [ ] Evaluate system using known match labels
+- [ ] Integrate result ranking display in the UI
+- [ ] Evaluate system using known match labels or qualitative review
 
 ---
 
