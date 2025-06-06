@@ -8,12 +8,11 @@
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import pandas as pd
 
 def match_jobs_tfidf(resume_text, job_descriptions, top_k=5):
-    docs = [resume_text] + job_descriptions
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(docs)
-    sim_scores = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
-    ranked_indices = sim_scores.argsort()[::-1][:top_k]
-    return [(i, sim_scores[i]) for i in ranked_indices]
+    documents = [resume_text] + job_descriptions
+    tfidf = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = tfidf.fit_transform(documents)
+    similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
+    top_indices = similarities.argsort()[::-1][:top_k]
+    return [(i, similarities[i]) for i in top_indices]

@@ -14,6 +14,7 @@ data/**
 
 # Ignore merged_job_data.csv
 dataset_preprocessing/merged_job_data.csv
+dataset_preprocessing/merged_job_data_no_summary.csv
 
 # But keep the folders themselves (not the contents)
 !data/

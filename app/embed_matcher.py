@@ -1,25 +1,13 @@
 
-# This script uses the Sentence Transformers library to embed a resume and job descriptions
-# and then calculates the cosine similarity between them.
-# It returns the top K job descriptions that are most similar to the resume.
-# This is a more advanced method for text matching,
-# leveraging pre-trained models to capture semantic meaning.
-# This method is more computationally expensive than TF-IDF,
-# but it can provide better results, especially for larger datasets or more complex text.
-# This script uses the Sentence Transformers library to embed a resume and job descriptions
-# and then calculates the cosine similarity between them.
-# It returns the top K job descriptions that are most similar to the resume.
-# This is a more advanced method for text matching,
-# leveraging pre-trained models to capture semantic meaning.
-# This method is more computationally expensive than TF-IDF,
-# but it can provide better results, especially for larger datasets or more complex text.
-# This script uses the Sentence Transformers library to embed a resume and job descriptions
-# and then calculates the cosine similarity between them.
-# It returns the top K job descriptions that are most similar to the resume.
-# This is a more advanced method for text matching,
-# leveraging pre-trained models to capture semantic meaning.
-# This method is more computationally expensive than TF-IDF,
-# but it can provide better results, especially for larger datasets or more complex text.
+"""
+This script uses the Sentence Transformers library to embed a resume and job descriptions
+and then calculates the cosine similarity between them.
+It returns the top K job descriptions that are most similar to the resume.
+This is a more advanced method for text matching,
+leveraging pre-trained models to capture semantic meaning.
+This method is more computationally expensive than TF-IDF,
+but it can provide better results, especially for larger datasets or more complex text.
+"""
 
 from sentence_transformers import SentenceTransformer, util
 model = SentenceTransformer('all-MiniLM-L6-v2')  # lightweight, fast
