@@ -69,8 +69,9 @@ This will:
 - ✅ Skill extraction using Hugging Face transformer-based NER models
 - ✅ Job-resume similarity matching using:
   - TF-IDF + cosine similarity
-  - BM25 scoring (via rank_bm25)
-  - Entity-based Jaccard similarity using Hugging Face NER
+  - BM25 (via rank_bm25)
+  - Sentence-BERT (MiniLM)
+  - Transformer-based entity matching (NER + Jaccard)
 - ✅ Score normalization for fair comparison across all methods
 
 ---
@@ -78,7 +79,7 @@ This will:
 ## 🛠️ To Do Next
 
 - [ ] Add Flask-based UI for resume uploads and job matches
-- [ ] Integrate result ranking display in the UI
+- [ ] Integrate result ranking display
 - [ ] Evaluate system using known match labels or qualitative review
 
 ---

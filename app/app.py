@@ -5,11 +5,12 @@ from utils import extract_text_from_pdf
 from tfidf_matcher import match_jobs_tfidf
 from bm25_matcher import match_jobs_bm25
 from transformers_extractor import match_jobs_by_entities
+from embed_matcher import match_jobs_embed
 
 # --- Configuration ---
 RESUME_PATH = "../data/resumes/INFORMATION-TECHNOLOGY/10089434.pdf"
 JOB_CSV_PATH = "../dataset_preprocessing/merged_job_data.csv"
-NUM_SAMPLES = 1000
+NUM_SAMPLES = 2000
 TOP_K = 5
 
 def normalize_scores(matches):
@@ -46,7 +47,11 @@ def main():
     bm25_matches = match_jobs_bm25(resume_text, job_texts, top_k=TOP_K)
     print_matches("BM25", normalize_scores(bm25_matches), job_texts)
 
-    # 5. Transformer-based entity matcher
+    # 5. Sentence-BERT (semantic similarity)
+    embed_matches = match_jobs_embed(resume_text, job_texts, top_k=TOP_K)
+    print_matches("Sentence-BERT", normalize_scores(embed_matches), job_texts)
+
+    # 6. Transformer-based entity matcher
     transformer_matches = match_jobs_by_entities(resume_text, job_texts, top_k=TOP_K)
     print_matches("Transformer (NER)", normalize_scores(transformer_matches), job_texts)
 
