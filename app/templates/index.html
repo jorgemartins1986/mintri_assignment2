@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Intelligent Job Matching</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding-top: 50px; }
+        .match-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .score { font-weight: bold; color: #0d6efd; }
+        .preview { font-style: italic; color: #555; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center mb-4">📄 Intelligent Job Description Matching</h1>
+
+    <form id="uploadForm" class="mb-4">
+        <div class="row g-2">
+            <div class="col-md-9">
+                <input class="form-control" type="file" id="resume" name="resume" accept=".pdf" required>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100" type="submit">Upload Resume</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mb-3">
+        <div id="loadingMessage" class="alert alert-info text-center d-none">🔄 Starting...</div>
+        <div class="progress">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                 role="progressbar" style="width: 0%">0%</div>
+        </div>
+    </div>
+
+    <div id="resultsContainer"></div>
+</div>
+
+<script>
+document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const fileInput = document.getElementById("resume");
+    const loadingMessage = document.getElementById("loadingMessage");
+    const progressBar = document.getElementById("progressBar");
+    const resultsContainer = document.getElementById("resultsContainer");
+
+    if (!fileInput.files.length) return;
+
+    const formData = new FormData();
+    formData.append("resume", fileInput.files[0]);
+
+    loadingMessage.classList.remove("d-none");
+    loadingMessage.textContent = "📄 Uploading resume...";
+    progressBar.style.width = "0%";
+    progressBar.textContent = "0%";
+    resultsContainer.innerHTML = "";
+
+    // Step 1 – Upload
+    const uploadRes = await fetch("/upload", { method: "POST", body: formData });
+    const uploadData = await uploadRes.json();
+
+    // Step 2 – Extract
+    loadingMessage.textContent = "🧾 Extracting resume...";
+    progressBar.style.width = "10%";
+    progressBar.textContent = "10%";
+
+    const resumeText = uploadData.resume_text;
+
+    const methods = [
+        { label: "TF-IDF", endpoint: "/match/tfidf" },
+        { label: "BM25", endpoint: "/match/bm25" },
+        { label: "Sentence-BERT", endpoint: "/match/bert" },
+        { label: "Transformer (NER)", endpoint: "/match/ner" }
+    ];
+
+    for (let i = 0; i < methods.length; i++) {
+        const { label, endpoint } = methods[i];
+        loadingMessage.textContent = `⚙️ Running ${label}...`;
+
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ resume_text: resumeText })
+        });
+
+        const data = await response.json();
+
+        const section = document.createElement("div");
+        section.className = "match-card";
+
+        section.innerHTML = `
+            <h4>${label} <small class="text-muted">(${data.time.toFixed(2)}s)</small></h4>
+            <ul class="list-group list-group-flush">
+                ${data.matches.map(m =>
+                    `<li class="list-group-item">
+                        <span class="score">[Score: ${m[1].toFixed(2)}]</span>
+                        Job #${m[0]} – <span class="preview">${m[2]}...</span>
+                    </li>`).join("")}
+            </ul>
+        `;
+        resultsContainer.appendChild(section);
+
+        const percent = Math.round(((i + 1) / methods.length) * 100);
+        progressBar.style.width = `${percent}%`;
+        progressBar.textContent = `${percent}%`;
+    }
+
+    loadingMessage.classList.remove("alert-info");
+    loadingMessage.classList.add("alert-success");
+    loadingMessage.textContent = "✅ All matching complete!";
+});
+</script>
+</body>
+</html>
