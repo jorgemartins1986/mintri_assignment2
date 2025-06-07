@@ -1,6 +1,12 @@
 # 🧠 Intelligent Job Description Matching & Skill Extraction
 
-This project builds a Flask-based intelligent matching system that extracts skills and experience from uploaded resumes (PDFs) and matches them to relevant job postings using both TF-IDF, BM25 and transformer-based similarity models.
+This project is an intelligent job matching system that extracts skills and experience from resumes (PDFs) and matches them to job listings using four different strategies:
+- ✅ TF-IDF + Cosine Similarity
+- ✅ BM25 Ranking
+- ✅ Sentence-BERT Embeddings
+- ✅ Transformer-based Named Entity Recognition (NER)
+
+It is powered by **Flask**, supports **step-by-step asynchronous matching**, and runs fully containerized with **VSCode Dev Containers**.
 
 ---
 
@@ -8,20 +14,21 @@ This project builds a Flask-based intelligent matching system that extracts skil
 
 ### 🔧 Prerequisites
 
-You need the following tools installed:
+Ensure the following are installed:
 
-- [Docker] (https://www.docker.com/)
-- [VSCode] (https://code.visualstudio.com/)
-- [Dev Containers Extension for VSCode] (https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-- [Git] (https://git-scm.com/)
-- [Jobs Dataset] (https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024/)
-- [Resumes Dataset] (https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset/)
+- [Docker](https://www.docker.com/)
+- [VSCode](https://code.visualstudio.com/)
+- [VSCode Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- [Git](https://git-scm.com/)
+
+Also required:
+
+- [Jobs Dataset (CSV)](https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024/)
+- [Resumes Dataset (PDF)](https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset/)
 
 ---
 
-### 📦 Recommended VSCode Extensions
-
-Inside `.devcontainer/devcontainer.json`, the following extensions are auto-installed:
+### 📦 Recommended VSCode Extensions (Auto-installed)
 
 - Python (`ms-python.python`)
 - Jupyter (`ms-toolsai.jupyter`)
@@ -29,67 +36,106 @@ Inside `.devcontainer/devcontainer.json`, the following extensions are auto-inst
 
 ---
 
-### 🐳 Running in a Dev Container
+## 🐳 Run in Dev Container
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/your-username/intelligent-matching.git
-   cd intelligent-matching
+   git clone https://github.com/your-username/mintri_assignment2.git
+   cd mintri_assignment2
    ```
 
-2. Copy Jobs dataset, csv files, to folder data/jobs/..
+2. Add data:
+   - Place CSV job listings in `data/jobs/`
+   - Place resume PDFs in `data/resumes/`
 
-3. Copy Resumes dataset, folders with pdf files, to folder data/resumes/..  
+3. Open the folder in **VSCode**.
 
-2. Open the folder in **VSCode**.
-
-3. Press `F1` → **“Dev Containers: Reopen in Container”**
+4. Press `F1` → “Dev Containers: Reopen in Container”
 
 This will:
-- Build the container
-- Install all Python dependencies
-- Auto-download NLTK stopwords
-- Set up the Jupyter kernel
+- Build and start the dev environment
+- Install Python dependencies
+- Enable Jupyter, Flask, and NLTK
 
 ---
 
 ## 📂 Project Structure
 
-- `app/` — core Python logic (PDF parsing, preprocessing, matching)
-- `dataset_preprocessing/` — notebooks for cleaning datasets
-- `uploads/` — uploaded resumes (PDF)
-- `Dockerfile` / `docker-compose.yml` — container config
-- `.devcontainer/` — VSCode dev environment
+```
+.
+├── app/                       # Flask app logic and matchers
+│   ├── tfidf_matcher.py
+│   ├── bm25_matcher.py
+│   ├── embed_matcher.py
+│   ├── transformers_extractor.py
+│   └── utils.py
+├── dataset_preprocessing/    # Cleaning and exploration notebooks
+├── templates/                # index.html with Bootstrap + JS
+├── uploads/                  # Temporarily stores uploaded PDFs
+├── .devcontainer/            # VSCode container config
+├── requirements.txt
+└── app.py                    # Main Flask application
+```
 
 ---
 
-## 🧪 Features Implemented
+## 🎯 Features
 
-- ✅ Resume text extraction from PDFs using PyMuPDF
-- ✅ Skill extraction using Hugging Face transformer-based NER models
-- ✅ Job-resume similarity matching using:
-  - TF-IDF + cosine similarity
-  - BM25 (via rank_bm25)
-  - Sentence-BERT (MiniLM)
-  - Transformer-based entity matching (NER + Jaccard)
-- ✅ Score normalization for fair comparison across all methods
+- ✅ PDF Resume Upload via Web Interface
+- ✅ Text Extraction (PyMuPDF)
+- ✅ Real-time progress updates using JavaScript + Fetch API
+- ✅ Step-by-step matcher progress: TF-IDF, BM25, BERT, NER
+- ✅ Score normalization across matchers
+- ✅ Bootstrap UI with progress bars and result cards
 
 ---
 
-## 🛠️ To Do Next
+## 📈 Matching Methods
 
-- [ ] Add Flask-based UI for resume uploads and job matches
-- [ ] Integrate result ranking display
-- [ ] Evaluate system using known match labels or qualitative review
+| Method             | Description                                     |
+|--------------------|-------------------------------------------------|
+| TF-IDF             | Term Frequency-Inverse Document Frequency       |
+| BM25               | Probabilistic retrieval (via `rank_bm25`)       |
+| Sentence-BERT      | Embedding-based similarity (MiniLM)             |
+| Transformer (NER)  | Jaccard similarity over extracted entities      |
 
 ---
 
-## 🤝 Contributions
+## 🧪 How it Works
 
-This repo is shared among academic collaborators. Feel free to fork or clone for learning and improvements.
+1. User uploads a resume (PDF)
+2. Text is extracted and displayed as “Extracting resume...”
+3. Each matcher runs in sequence via AJAX:
+   - TF-IDF
+   - BM25
+   - Sentence-BERT
+   - NER
+4. UI displays:
+   - Top 5 job matches per method
+   - Normalized scores
+   - Execution time per method
+
+---
+
+## ✅ Example Output
+
+```
+🔹 TF-IDF:      [Score: 0.32] Job #5 - Data Analyst, SQL, Tableau, Python...
+🔹 BM25:        [Score: 0.89] Job #32 - ML Engineer, scikit-learn, PyTorch...
+🔹 Sentence-BERT: [Score: 0.76] Job #18 - AI Researcher, BERT, TensorFlow...
+🔹 Transformer (NER): [Score: 0.55] Job #23 - DevOps, AWS, Docker, Kubernetes...
+```
+
+---
+
+## 🛠️ Future Improvements
+
+- [ ] Add authentication and save history per user
+- [ ] Enable manual skill feedback and fine-tuning
+- [ ] Integrate more advanced transformer models
 
 ---
 
 ## 📄 License
 
-MIT License (or your preferred one)
+MIT License
